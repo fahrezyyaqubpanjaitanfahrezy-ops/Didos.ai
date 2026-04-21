@@ -32,7 +32,7 @@
         window.onload = () => {
             const nama = localStorage.getItem('namaUser');
             if (nama) {
-                tambahPesan("Didos AI", `Halo! ${nama}, ada yang mau dibahas lagi?`);
+                tambahPesan("Didos AI", `Halo! ${nama}, akhirnya aku bangun. Ada yang mau ditanya?`);
             } else {
                 tambahPesan("Didos AI", "Halo! Aku Didos. Partner cerdasmu. Nama kamu siapa?");
             }
@@ -51,19 +51,18 @@
             } else {
                 tambahPesan("Didos AI", "Didos lagi mikir...");
                 try {
-                    // SERVER SKIZOTECH (STABIL)
-                    const resp = await fetch(`https://skizo.tech/api/openai?apikey=free&text=${encodeURIComponent(pesan)}`);
+                    // JALUR VIP: MENGGUNAKAN SERVER BLACKBOX (BIASANYA SANGAT STABIL)
+                    const resp = await fetch(`https://api.vreden.web.id/api/blackbox?query=${encodeURIComponent(pesan)}`);
                     const data = await resp.json();
                     
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
 
-                    // Format jawaban dari Skizotech biasanya langsung di data.result
-                    tambahPesan("Didos AI", data.result || "Duh, sinyalnya putus nyambung. Coba lagi?");
+                    tambahPesan("Didos AI", data.result || "Aduh, aku bingung jawabnya. Coba tanya lagi?");
                 } catch (e) {
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
-                    tambahPesan("Didos AI", "Waduh Rez, Didos ketiduran beneran. Coba bangunin semenit lagi ya!");
+                    tambahPesan("Didos AI", "Waduh Rez, kabel pusatnya digigit tikus kayaknya. Coba sedetik lagi!");
                 }
             }
         }
