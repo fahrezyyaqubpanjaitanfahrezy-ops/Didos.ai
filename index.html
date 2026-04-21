@@ -51,18 +51,18 @@
             } else {
                 tambahPesan("Didos AI", "Didos lagi mikir...");
                 try {
-                    // JALUR VIP: MENGGUNAKAN SERVER BLACKBOX (BIASANYA SANGAT STABIL)
-                    const resp = await fetch(`https://api.vreden.web.id/api/blackbox?query=${encodeURIComponent(pesan)}`);
+                    // JALUR LUGU AI (BIASANYA LANCAR JAYA)
+                    const resp = await fetch(`https://ai.lugu.vip/api/chat?text=${encodeURIComponent(pesan)}`);
                     const data = await resp.json();
                     
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
 
-                    tambahPesan("Didos AI", data.result || "Aduh, aku bingung jawabnya. Coba tanya lagi?");
+                    tambahPesan("Didos AI", data.result || "Duh, aku bingung jawabnya. Coba tanya lagi?");
                 } catch (e) {
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
-                    tambahPesan("Didos AI", "Waduh Rez, kabel pusatnya digigit tikus kayaknya. Coba sedetik lagi!");
+                    tambahPesan("Didos AI", "Waduh Rez, tikusnya manggil temen-temennya nih. Coba sekali lagi!");
                 }
             }
         }
