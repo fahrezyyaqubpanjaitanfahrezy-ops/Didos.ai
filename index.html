@@ -5,11 +5,7 @@
     <title>Didos AI - Partner</title>
     <style>
         body { font-family: sans-serif; background: #121212; color: white; padding: 15px; margin: 0; }
-        #chat-box { 
-            display: flex; flex-direction: column; gap: 15px; 
-            height: 400px; overflow-y: auto; background: #1e1e1e; 
-            padding: 15px; border-radius: 15px; border: 1px solid #333;
-        }
+        #chat-box { display: flex; flex-direction: column; gap: 15px; height: 400px; overflow-y: auto; background: #1e1e1e; padding: 15px; border-radius: 15px; border: 1px solid #333; }
         .didos-msg { align-self: flex-start; background: #2a2a2a; padding: 10px; border-radius: 15px 15px 15px 2px; max-width: 80%; border-left: 4px solid #3b82f6; }
         .user-msg { align-self: flex-end; background: #3b82f6; padding: 10px; border-radius: 15px 15px 2px 15px; max-width: 80%; }
         .label { font-size: 0.7rem; opacity: 0.6; margin-bottom: 5px; display: block; font-weight: bold; }
@@ -21,10 +17,8 @@
     </style>
 </head>
 <body>
-
     <h3>Didos AI ⚡</h3>
     <div id="chat-box"></div>
-
     <div class="input-group">
         <input type="text" id="userInput" placeholder="Ketik di sini...">
         <button class="btn-kirim" onclick="kirimPesan()">Kirim</button>
@@ -47,33 +41,28 @@
         async function kirimPesan() {
             const pesan = input.value.trim();
             if (!pesan) return;
-
             tambahPesan("Kamu", pesan);
             input.value = '';
 
             const namaTerdaftar = localStorage.getItem('namaUser');
-            
             if (!namaTerdaftar) {
                 localStorage.setItem('namaUser', pesan);
-                setTimeout(() => {
-                    tambahPesan("Didos AI", `Oke ${pesan}, namamu sudah kusimpan! Tanya apa saja.`);
-                }, 800);
+                setTimeout(() => { tambahPesan("Didos AI", `Oke ${pesan}, namamu sudah kusimpan! Tanya apa saja.`); }, 800);
             } else {
-                tambahPesan("Didos AI", "Didos lagi mikir bentar...");
-
+                tambahPesan("Didos AI", "Didos lagi mikir...");
                 try {
-                    // MENGGUNAKAN SERVER BARU YANG LEBIH STABIL
-                    const resp = await fetch(`https://itzpika-ws.vercel.app/api/simi?query=${encodeURIComponent(pesan)}`);
+                    // PAKAI SERVER BRYANT (LEBIH STABIL)
+                    const resp = await fetch(`https://api.bryant.my.id/api/ai/logic?text=${encodeURIComponent(pesan)}`);
                     const data = await resp.json();
-
+                    
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
 
-                    tambahPesan("Didos AI", data.result || "Duh, aku lagi blank. Coba tanya lagi?");
+                    tambahPesan("Didos AI", data.result || "Aduh, aku bingung jawabnya. Coba tanya lain?");
                 } catch (e) {
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
-                    tambahPesan("Didos AI", "Waduh Rez, otakku lagi panas! Coba kirim ulang pesannya ya.");
+                    tambahPesan("Didos AI", "Aduh Rez, server pusatnya lagi penuh. Coba sedetik lagi ya!");
                 }
             }
         }
