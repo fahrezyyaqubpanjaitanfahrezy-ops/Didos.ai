@@ -35,7 +35,6 @@
         const chatBox = document.getElementById('chat-box');
         const input = document.getElementById('userInput');
 
-        // 1. Fungsi Nyapa di Awal
         window.onload = () => {
             const nama = localStorage.getItem('namaUser');
             if (nama) {
@@ -45,7 +44,6 @@
             }
         };
 
-        // 2. Fungsi Kirim Pesan (Pintar)
         async function kirimPesan() {
             const pesan = input.value.trim();
             if (!pesan) return;
@@ -64,22 +62,22 @@
                 tambahPesan("Didos AI", "Didos lagi mikir bentar...");
 
                 try {
-                    // Pakai API gratisan yang gampang
-                    const resp = await fetch(`https://api.simsimi.vn/v2/simsimi?text=${encodeURIComponent(pesan)}&lc=id`);
+                    // MENGGUNAKAN SERVER BARU YANG LEBIH STABIL
+                    const resp = await fetch(`https://itzpika-ws.vercel.app/api/simi?query=${encodeURIComponent(pesan)}`);
                     const data = await resp.json();
 
-                    // Hapus tulisan "Didos lagi mikir"
                     const msgs = document.querySelectorAll('.didos-msg');
-                    msgs[msgs.length - 1].remove();
+                    if(msgs.length > 0) msgs[msgs.length - 1].remove();
 
                     tambahPesan("Didos AI", data.result || "Duh, aku lagi blank. Coba tanya lagi?");
                 } catch (e) {
-                    tambahPesan("Didos AI", "Koneksi lagi bermasalah nih, Rez!");
+                    const msgs = document.querySelectorAll('.didos-msg');
+                    if(msgs.length > 0) msgs[msgs.length - 1].remove();
+                    tambahPesan("Didos AI", "Waduh Rez, otakku lagi panas! Coba kirim ulang pesannya ya.");
                 }
             }
         }
 
-        // 3. Fungsi Nambah Balon Chat
         function tambahPesan(pengirim, teks) {
             const isDidos = pengirim === "Didos AI";
             const className = isDidos ? "didos-msg" : "user-msg";
@@ -87,7 +85,6 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        // 4. Fungsi Reset
         function resetMemori() {
             if (confirm("Hapus ingatan Didos?")) {
                 localStorage.removeItem('namaUser');
