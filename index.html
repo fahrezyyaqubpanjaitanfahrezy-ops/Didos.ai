@@ -51,19 +51,18 @@
             } else {
                 tambahPesan("Didos AI", "Didos lagi mikir...");
                 try {
-                    // MENGGUNAKAN SERVER ALYN (LEBIH HANDAL)
-                    const resp = await fetch(`https://api.alyn.my.id/api/ai/alya-v2?prompt=${encodeURIComponent(pesan)}`);
+                    // MENGGUNAKAN SERVER SANDIPAPI (STABIL)
+                    const resp = await fetch(`https://sandipapi.onrender.com/bing?prompt=${encodeURIComponent(pesan)}`);
                     const data = await resp.json();
                     
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
 
-                    // Mengambil hasil dari data.answer (sesuai format server ini)
                     tambahPesan("Didos AI", data.answer || "Duh, aku lagi blank. Coba tanya lagi?");
                 } catch (e) {
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
-                    tambahPesan("Didos AI", "Waduh Rez, sinyal ke pusat lagi macet. Coba tes lagi ya!");
+                    tambahPesan("Didos AI", "Aduh Rez, sepertinya kita butuh kopi biar koneksinya lancar. Coba lagi ya!");
                 }
             }
         }
@@ -84,4 +83,3 @@
     </script>
 </body>
 </html>
-
