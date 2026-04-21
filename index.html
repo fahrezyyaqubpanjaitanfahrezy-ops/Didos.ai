@@ -51,18 +51,19 @@
             } else {
                 tambahPesan("Didos AI", "Didos lagi mikir...");
                 try {
-                    // SERVER BARU YANG LEBIH ENTENG (AURA API)
-                    const resp = await fetch(`https://api.vreden.web.id/api/bing?query=${encodeURIComponent(pesan)}`);
+                    // SERVER SKIZOTECH (STABIL)
+                    const resp = await fetch(`https://skizo.tech/api/openai?apikey=free&text=${encodeURIComponent(pesan)}`);
                     const data = await resp.json();
                     
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
 
-                    tambahPesan("Didos AI", data.result || "Duh, otakku macet sebentar. Coba tanya lagi?");
+                    // Format jawaban dari Skizotech biasanya langsung di data.result
+                    tambahPesan("Didos AI", data.result || "Duh, sinyalnya putus nyambung. Coba lagi?");
                 } catch (e) {
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
-                    tambahPesan("Didos AI", "Sistem pusat lagi istirahat, Rez. Tunggu semenit ya!");
+                    tambahPesan("Didos AI", "Waduh Rez, Didos ketiduran beneran. Coba bangunin semenit lagi ya!");
                 }
             }
         }
@@ -83,4 +84,3 @@
     </script>
 </body>
 </html>
- 
