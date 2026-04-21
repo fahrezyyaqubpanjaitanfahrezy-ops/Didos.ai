@@ -51,18 +51,18 @@
             } else {
                 tambahPesan("Didos AI", "Didos lagi mikir...");
                 try {
-                    // MENGGUNAKAN SERVER SANDIPAPI (STABIL)
-                    const resp = await fetch(`https://sandipapi.onrender.com/bing?prompt=${encodeURIComponent(pesan)}`);
+                    // SERVER BARU YANG LEBIH ENTENG (AURA API)
+                    const resp = await fetch(`https://api.vreden.web.id/api/bing?query=${encodeURIComponent(pesan)}`);
                     const data = await resp.json();
                     
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
 
-                    tambahPesan("Didos AI", data.answer || "Duh, aku lagi blank. Coba tanya lagi?");
+                    tambahPesan("Didos AI", data.result || "Duh, otakku macet sebentar. Coba tanya lagi?");
                 } catch (e) {
                     const msgs = document.querySelectorAll('.didos-msg');
                     if(msgs.length > 0) msgs[msgs.length - 1].remove();
-                    tambahPesan("Didos AI", "Aduh Rez, sepertinya kita butuh kopi biar koneksinya lancar. Coba lagi ya!");
+                    tambahPesan("Didos AI", "Sistem pusat lagi istirahat, Rez. Tunggu semenit ya!");
                 }
             }
         }
@@ -83,3 +83,4 @@
     </script>
 </body>
 </html>
+ 
