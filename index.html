@@ -14,6 +14,8 @@
         button { padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .btn-kirim { background: #3b82f6; color: white; }
         .btn-reset { background: #ff4444; color: white; width: 100%; margin-top: 10px; }
+        /* Tambahan style untuk loading agar lebih jelas */
+        .loading { font-style: italic; opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -28,6 +30,11 @@
     <script>
         const chatBox = document.getElementById('chat-box');
         const input = document.getElementById('userInput');
+
+        // Tambahkan support enter untuk mengirim pesan agar lebih cepat digunakan
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') kirimPesan();
+        });
 
         window.onload = () => {
             const nama = localStorage.getItem('namaUser');
@@ -47,22 +54,39 @@
             const namaTerdaftar = localStorage.getItem('namaUser');
             if (!namaTerdaftar) {
                 localStorage.setItem('namaUser', pesan);
-                setTimeout(() => { tambahPesan("Didos AI", `Oke ${pesan}, namamu sudah kusimpan! Tanya apa saja.`); }, 800);
+                setTimeout(() => { 
+                    tambahPesan("Didos AI", `Oke ${pesan}, namamu sudah kusimpan! Tanya apa saja.`); 
+                }, 800);
             } else {
-                tambahPesan("Didos AI", "Didos lagi mikir...");
+                // Simpan elemen loading untuk mudah dihapus nanti
+                const loadingMsg = tambahPesan("Didos AI", "<span class='loading'>Didos lagi mikir...</span>");
                 try {
-                
-                    const resp = await fetch(`https://ai.lugu.vip/api/chat?text=${encodeURIComponent(pesan)}`);
-                    const data = await resp.json();
-                    
-                    const msgs = document.querySelectorAll('.didos-msg');
-                    if(msgs.length > 0) msgs[msgs.length - 1].remove();
+                    // Tambahkan timeout agar tidak tunggu terlalu lama jika server lambat
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // Timeout 10 detik
 
-                
+                    const resp = await fetch(`https://ai.lugu.vip/api/chat?text=${encodeURIComponent(pesan)}`, {
+                        signal: controller.signal,
+                        method: 'GET', // Pastikan method sesuai
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    clearTimeout(timeoutId);
+
+                    if (!resp.ok) throw new Error(`Gagal mengambil data (Kode: ${resp.status})`);
+                    const data = await resp.json();
+
+                    // Hapus pesan loading
+                    loadingMsg.remove();
+                    // Tampilkan jawaban AI yang akurat
+                    tambahPesan("Didos AI", data.response || "Maaf, aku tidak mengerti maksudmu.");
+
                 } catch (e) {
-                    const msgs = document.querySelectorAll('.didos-msg');
-                    if(msgs.length > 0) msgs[msgs.length - 1].remove();
-                    ù
+                    // Hapus pesan loading jika ada error
+                    if (loadingMsg) loadingMsg.remove();
+                    // Berikan pesan error yang jelas agar pengguna tahu masalahnya
+                    let errorMsg = "Maaf, ada masalah saat menghubungi AI. Coba lagi nanti ya!";
+                    if (e.name === 'AbortError') errorMsg = "Waktu tunggu terlalu lama. Coba lagi atau periksa koneksi internetmu!";
+                    tambahPesan("Didos AI", errorMsg);
                 }
             }
         }
@@ -70,8 +94,13 @@
         function tambahPesan(pengirim, teks) {
             const isDidos = pengirim === "Didos AI";
             const className = isDidos ? "didos-msg" : "user-msg";
-            chatBox.innerHTML += `<div class="${className}"><span class="label">${pengirim}</span><div>${teks}</div></div>`;
+            // Buat elemen baru agar bisa dihapus dengan mudah nanti
+            const msgDiv = document.createElement('div');
+            msgDiv.className = className;
+            msgDiv.innerHTML = `<span class="label">${pengirim}</span><div>${teks}</div>`;
+            chatBox.appendChild(msgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
+            return msgDiv; // Kembalikan elemen untuk keperluan hapus
         }
 
         function resetMemori() {
